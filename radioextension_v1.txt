@@ -1,0 +1,22 @@
+@name RadioExtension v1
+@inputs RawNum:string
+@outputs Channel
+@persist C
+@trigger 
+@strict
+
+interval(50)
+
+if (first()) {
+    Channel = 1
+}
+
+event input(HotRadioSex:string) {
+    Num = RawNum:toNumber()
+    if (Num < 1) {
+        Num = 1
+    }
+    else {
+        Channel = Num
+    }
+}

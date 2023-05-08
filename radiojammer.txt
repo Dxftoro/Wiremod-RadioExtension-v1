@@ -1,0 +1,25 @@
+@name RadioJammer
+@inputs Cn On
+@outputs Channel FakePorts:vector
+@persist 
+@trigger 
+@strict
+
+interval(100)
+if (first()) {
+    Channel = 1
+}
+
+if (Cn < 1) {
+    Channel = 1   
+}
+else {
+    Channel = Cn    
+}
+
+if (On) {
+    FakePorts = vec(randint(-5000, 5000), randint(-5000, 5000), randint(-5000, 5000))
+}
+elseif (~On) {
+    if (!On) {reset()}   
+}
