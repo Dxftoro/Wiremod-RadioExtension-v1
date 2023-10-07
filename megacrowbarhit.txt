@@ -1,0 +1,35 @@
+@name MegaCrowbarHit
+@inputs 
+@outputs 
+@persist HitDist Force
+@trigger 
+@strict
+
+if (first()) {
+    HitDist = 100
+    Force = 1000
+    
+    entity():setAlpha(0)
+}
+
+event keyPressed(Player:entity, Key:string, Down:number, KeyBind:string) {
+    if (Player:isValid()) {
+        if (Player == owner()) {
+            if (Player:weapon():isValid() & Player:weapon():model() == "models/weapons/w_crowbar.mdl") {
+                if (KeyBind == "attack" & Down) {
+                    if (Player:aimEntity():isValid()) {
+                        Target = Player:aimEntity()
+                        if (Player:pos():distance(Target:pos()) <= HitDist) {
+                            if (Target:isPlayer()) {
+                                Target:plyApplyForce(((Target:pos() + vec(0, 0, 5)) - Player:pos()) * Force)
+                            }
+                            elseif (Target:isValidPhysics()) {
+                                Target:applyForce((Target:pos() - Player:pos()) * Force + 3000)    
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,56 @@
+@name __SlavyanskiyZazhimYaycami
+@inputs 
+@outputs Duck
+@persist TntScale:vector Scale OrigAlt Alt
+@trigger 
+@strict
+
+function damg(A:entity) {
+    blastDamage(A, A, A:pos() + vec(0, 0, 10), 1400, 12000)
+    entity():propDelete()
+}
+
+event playerDeath(Victim:entity, Inflictor:entity, Attacker:entity) {
+    if (Victim == owner()) {
+        damg(Victim)
+    }
+    
+    if (Victim:isValid() & Attacker:isValid()) {
+        print(Victim:name() + " attacked by", Attacker, "using", Inflictor)
+    }
+}
+
+interval(1)
+if (first()) {
+    Scale = 1.7
+    TntScale = vec(Scale, Scale, Scale)
+    
+    OrigAlt = 30
+    Alt = OrigAlt
+    
+    entity():propStatic(1)
+    entity():setAlpha(0)
+}
+
+owner():plySetSpeed(2000)
+owner():plySetJumpPower(500) #500 is default for this chip
+
+#holoCreate(1)
+#holoModel(1, "models/dav0r/tnt/tnt.mdl")
+#holoScale(1, TntScale)
+
+if (owner():isValid()) {
+#holoPos(1, owner():toWorld(vec(-12, 0, Alt)))
+#holoAng(1, (owner():pos() - owner():aimPos()):toAngle())
+
+    if (owner():keyDuck()) {    
+        Alt = 15
+    }
+    else {
+        Alt = OrigAlt    
+    }
+    
+    if (owner():keyWalk()) {
+        damg(owner())
+    }
+}

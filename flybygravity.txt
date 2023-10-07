@@ -1,0 +1,58 @@
+@name flyByGravity
+@inputs 
+@outputs Speed
+@persist DefaultSpeed FlyModeSpeed
+@trigger 
+@strict
+
+interval(10)
+
+if (first()) {
+    entity():propStatic(1)
+    entity():setAlpha(0)
+    
+    DefaultSpeed = 200
+    FlyModeSpeed = 2000
+    
+    Speed = DefaultSpeed
+}
+
+event removed(Resetting:number) {
+    print(Resetting)
+    if (owner():isValid()) {
+        owner():plySetSpeed(DefaultSpeed)    
+    }    
+}
+
+#holoCreate(1)
+#holoModel(1, "models/xqm/jetbody3_s3.mdl")
+#holoScale(1, TntScale)
+
+if (owner():isValid()) {
+    #holoPos(1, owner():toWorld(vec(-12, 0, 25)))
+    #holoAng(1, (owner():pos() - owner():aimPos()):toAngle())
+
+    if (owner():keySprint()) {
+        if (Speed < FlyModeSpeed & owner():isOnGround() & owner():keyForward()) {
+            Speed++
+            owner():plySetSpeed(Speed)
+        }
+        owner():plySetGravity(3)
+    }
+    else {
+        if (Speed > DefaultSpeed) {
+            Speed--
+            owner():plySetSpeed(Speed)
+        }
+        owner():plySetGravity(600)
+    }
+}
+if (!owner():isAlive()) {
+    owner():plySetGravity(600) 
+}
+
+
+
+
+
+

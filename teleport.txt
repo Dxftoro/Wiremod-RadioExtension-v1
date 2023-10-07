@@ -1,0 +1,19 @@
+@name Teleport
+@inputs 
+@outputs 
+@persist 
+@trigger 
+@strict
+
+if (first()) {
+    entity():propStatic(1)
+    entity():setAlpha(0)
+}
+
+event keyPressed(Player:entity, Key:string, Down:number, KeyBind:string) {
+    if (Player == owner() & owner():isValid()) {
+        if (Key == "t" & Down) {
+            Player:plySetPos(Player:aimPos())
+        }    
+    }    
+}
