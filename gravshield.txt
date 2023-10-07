@@ -1,0 +1,72 @@
+@name GravShield
+@inputs 
+@outputs Targets:array Energy
+@persist Radius Force Cost FragEnergy HurtEnergy PassiveEnergy
+@trigger 
+@strict
+
+interval(100)
+
+if (first()) {
+    Radius = 600
+    Force = 10000
+    
+    Energy = 6
+    FragEnergy = 1
+    HurtEnergy = 0.06
+    PassiveEnergy = 0
+    Cost = 3
+}
+
+Energy += PassiveEnergy
+
+function push(O:entity, E:entity) {
+    if (E:owner() == O) {
+        E:applyForce((E:pos() - O:pos()) * Force)
+    }
+}
+
+function pushply(O:entity, E:entity) {
+    E:plyApplyForce((E:pos() - O:pos()) * Force)
+}
+
+event playerDeath(Victim:entity, Inflictor:entity, Attacker:entity) {
+    if (Victim != owner() & Attacker == owner()) {
+        Energy += FragEnergy
+    }
+}
+
+event playerDamage(Victim:entity, Damage:damage) {
+    if (Victim:isValid() & Victim == owner()) {
+        Energy += HurtEnergy
+    }   
+}
+
+event keyPressed(Ply:entity, Key:string, Down:number, KeyBind:string) {
+    if (Ply:isValid() & Ply == owner()) {
+        if (Key == "t" & Down) {
+            if (Energy >= Cost) {
+                
+            findInSphere(Ply:pos(), Radius)
+            Targets = findToArray()
+            
+            Ply:emitSound("eft_komar/aughh.wav")
+            
+            for (I = 0, Targets:count()) {
+                if (Targets[I, entity]:isValid()) {
+                    Target = Targets[I, entity]
+                    if (Target:isPlayer()) {
+                        pushply(Ply, Target)   
+                    }
+                    elseif (Target:isValidPhysics()) {
+                        push(Ply, Target)    
+                    }
+                }
+            }
+            
+            Energy -= Cost
+            }
+            else {hint("NOT ENOUGH ENERGY!!!", 10)}
+        }
+    }
+}

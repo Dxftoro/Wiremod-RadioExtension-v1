@@ -1,0 +1,39 @@
+@name Shield
+@inputs 
+@outputs Shield:entity
+@persist Bind:string
+@trigger 
+@strict
+
+interval(10)
+
+if (first()) {
+    Bind = "t"
+    
+    entity():setAlpha(0)
+    entity():propStatic(1)
+}
+
+event playerDamage(Victim:entity, Damage:damage) {
+    if (Victim == owner() & owner():isValid()) {
+        if (!Shield:isValid()) {
+            Shield = propSpawn("models/props_phx/construct/glass/glass_curve360x2.mdl", 1)
+            Shield:noCollideAll(1)
+            Shield:propStatic(1)
+        }
+    }
+}
+
+event keyPressed(Player:entity, Key:string, Down:number, KeyBind:string) {
+    if (Player == owner() & Key == Bind) {
+        if (Shield:isValid()) {Shield:propDelete()}    
+    }
+}
+
+if (Shield:isValid()) {
+    Shield:setPos(owner():pos() + vec(0, 0, 0))
+}
+
+if (!owner():isAlive()) {
+    if (Shield:isValid()) {Shield:propDelete()} 
+}
